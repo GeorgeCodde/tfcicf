@@ -1,37 +1,17 @@
 ##################################################################################
 # DATA SOURCES
 ##################################################################################
-/*
-data "consul_keys" "applications" {
-  key {
-    name = "applications"
-    path = terraform.workspace == "default" ? "applications/configuration/globo-primary/app_info" : "applications/configuration/globo-primary/${terraform.workspace}/app_info"
-  }
 
-  key {
-    name = "common_tags"
-    path = "applications/configuration/globo-primary/common_tags"
-  }
-}*/
 
 data "terraform_remote_state" "networking" {
   backend = "s3"
   config = {
-    bucket = "terraform-state-prod"
-    key    = "networking/terraform.tfstate"
+    bucket = "tf-backend-16170"
+    key    = "env:/${terraform.workspace}/networking/terraform.tfstate"
     region = "eu-central-1"
   }
 }
 
-/*data "terraform_remote_state" "networking" {
-  backend = "consul"
-
-  config = {
-    address = "${var.consul_address}:8500"
-    scheme  = "http"
-    path    = terraform.workspace == "default" ? "networking/state/globo-primary" : "networking/state/globo-primary-env:${terraform.workspace}"
-  }
-}*/
 
 data "aws_ami" "aws_linux" {
   most_recent = true
